@@ -1,0 +1,19 @@
+[project]
+name = "garch_vol_analsis"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "pandas",
+    "numpy",
+    "arch",
+    "plotly",
+    "python-dotenv",
+    "polygon-api-client",
+    "torch",
+    "scikit-learn",
+    "pytest",
+]
+
+[tool.setuptools]
+packages = ["core"]

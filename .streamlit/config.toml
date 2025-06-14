@@ -1,0 +1,17 @@
+# Main theme settings
+[theme]
+primaryColor="#6C22D6"          # Purple
+backgroundColor="#FFFFFF"        # White
+secondaryBackgroundColor="#F0F2F6" # Light Gray
+textColor="#262730"              # Dark Gray
+font="sans serif"
+
+# Server settings
+[server]
+port = 8501
+headless = true # Set to true to avoid opening a browser window on start
+
+# Browser settings
+[browser]
+gatherUsageStats = false # Disables gathering of usage statistics
+

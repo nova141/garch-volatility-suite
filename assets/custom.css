@@ -1,0 +1,35 @@
+/*
+This custom CSS file allows for fine-tuning the Streamlit application's appearance.
+To apply these styles, this file is loaded in the main `app.py`.
+*/
+
+/* Style the metric widgets used for performance evaluation */
+[data-testid="stMetric"] {
+    background-color: #f0f2f6; /* A light gray background */
+    border: 1px solid #e6e6e6;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Style the metric label (e.g., "Mean Squared Error") */
+[data-testid="stMetricLabel"] {
+    font-weight: 500;
+    color: #4f4f4f; /* A slightly darker gray for better contrast */
+}
+
+/* Style the main metric value */
+[data-testid="stMetricValue"] {
+    font-size: 1.75em;
+    font-weight: 600;
+    color: #262730;
+}
+
+/* Style the delta (comparison) value */
+[data-testid="stMetricDelta"] svg {
+    fill: #29b09d; /* A green color for positive delta */
+}
+
+[data-testid="stMetricDelta"] svg[aria-label="Arrow down"] {
+    fill: #ff4b4b; /* A red color for negative delta */
+}

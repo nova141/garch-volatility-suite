@@ -1,0 +1,34 @@
+# Core web framework (pinned for stability)
+streamlit==1.35.0
+
+# Data manipulation and numerical analysis
+pandas
+numpy
+
+# Financial time series modeling (pinned for consistent API)
+arch==6.3.0
+
+# Plotting
+plotly
+
+# Environment variable management
+python-dotenv
+
+# Polygon.io API client
+polygon-api-client
+
+# Deep Learning (pinned for stability with Python 3.12+)
+torch==2.3.0
+
+# Data scaling
+scikit-learn
+
+# Testing framework
+pytest
+
+# Statistical models and plots
+statsmodels
+matplotlib
+
+# Scientific computing (for Black-Scholes and root finding)
+scipy
