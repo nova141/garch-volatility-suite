@@ -1,21 +1,17 @@
 import streamlit as st
-import os
 import pandas as pd
 import numpy as np
 from polygon.rest import RESTClient
 from datetime import date, timedelta
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 @st.cache_resource(ttl="1h")
 def get_polygon_client():
-    api_key = os.getenv("POLYGON_API_KEY")
-    if not api_key:
-        st.error("Polygon.io API key not found. Please set it in your .env file.")
+    if "POLYGON_API_KEY" in st.secrets:
+        api_key = st.secrets["POLYGON_API_KEY"]
+        return RESTClient(api_key)
+    else:
+        st.error("Polygon.io API key not found.")
         st.stop()
-    return RESTClient(api_key)
 
 
 @st.cache_data(ttl="15m")
@@ -49,13 +45,15 @@ def calculate_log_returns(data: pd.DataFrame) -> pd.Series:
 @st.cache_data(ttl="5m")
 def get_latest_stock_price(ticker: str) -> float:
     client = get_polygon_client()
+    today_str = date.today().strftime("%Y-%m-%d")
+    yesterday_str = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+
     try:
-        resp = client.get_daily_open_close_agg(ticker, date.today().strftime("%Y-%m-%d"))
+        resp = client.get_daily_open_close_agg(ticker, yesterday_str)
         return resp.close
     except Exception:
         try:
-            prev_day = date.today() - timedelta(days=1)
-            resp = client.get_daily_open_close_agg(ticker, prev_day.strftime("%Y-%m-%d"))
+            resp = client.get_daily_open_close_agg(ticker, today_str)
             return resp.close
         except Exception as e:
             st.error(f"Could not fetch latest price for {ticker}: {e}")
@@ -65,7 +63,7 @@ def get_latest_stock_price(ticker: str) -> float:
 def get_option_expirations(ticker: str) -> list:
     client = get_polygon_client()
     try:
-        contracts_generator = client.list_options_contracts(underlying_ticker=ticker, limit=1000)
+        contracts_generator = client.list_options_contracts(underlying_ticker=ticker.upper(), limit=1000)
         expirations = sorted(list(set(c.expiration_date for c in contracts_generator)))
         return expirations
     except Exception as e:
@@ -77,9 +75,13 @@ def get_options_chain(ticker: str, expiration_date: str) -> pd.DataFrame:
     client = get_polygon_client()
     try:
         chain = []
-        contracts_generator = client.list_options_contracts(underlying_ticker=ticker, expiration_date=expiration_date,
-                                                            limit=1000)
         prev_trading_day = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+
+        contracts_generator = client.list_options_contracts(
+            underlying_ticker=ticker.upper(),
+            expiration_date=expiration_date,
+            limit=1000
+        )
 
         for contract in contracts_generator:
             try:
@@ -105,4 +107,4 @@ def get_options_chain(ticker: str, expiration_date: str) -> pd.DataFrame:
 
 
 def get_risk_free_rate() -> float:
-    return 0.05  # Assume 5%
+    return 0.05
